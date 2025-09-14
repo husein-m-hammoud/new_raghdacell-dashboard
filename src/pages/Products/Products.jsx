@@ -1,119 +1,145 @@
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { fileUrl, useFETCH } from "../../APIs/useMyAPI";
+import { useFETCH, fetchData } from "../../APIs/useMyAPI";
 import { Col, Row } from "../../Grid-system";
 import Loading from "../../Tools/Loading";
-
-import {
-  Add,
-  ButtonRed,
-  CardPro,
-  FilterProducts,
-  FilterSearch,
-  ApiLogo,
-  Title,
-} from "../../components";
+import { useContextHook } from "../../Context/ContextOPen";
+import { Title } from "../../components";
 
 const Products = () => {
+  const [saving, setSaving] = useState(false);
+  const [data, setData] = useState(null);
+  const [globalPercent, setGlobalPercent] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // 🔍 search input
+
+  const { setMessage } = useContextHook();
+
   const { search } = useLocation();
-  const { data, isLoading, deleteItem } = useFETCH(
-    `admin/products${search}`,
-    "admin/products"
-  );
+  const {
+    data: commissions,
+    isLoading,
+    deleteItem,
+  } = useFETCH("admin/commissions");
+  const { data: global_percentage } = useFETCH("admin/global-percentage");
+
+  useEffect(() => {
+    if (commissions) {
+      setData(commissions?.data?.data);
+    }
+  }, [commissions]);
+
+  useEffect(() => {
+    if (global_percentage) {
+      setGlobalPercent(global_percentage?.data?.data ?? "");
+    }
+  }, [global_percentage]);
+
+  const savePercentage = async (item) => {
+    const value = document.getElementById(`item-${item.type}-${item.id}`).value;
+    const json = await fetchData(
+      `admin/commissions/update`,
+      { type: item.type, id: item.id, percentage: value },
+      "POST"
+    );
+    if (json.success) setMessage("Updated!");
+  };
+
+  const saveGlobalPercentage = async () => {
+    setSaving(true);
+    const json = await fetchData(
+      `admin/global-percentage`,
+      { percentage: globalPercent },
+      "POST"
+    );
+    setSaving(false);
+    if (json.success) {
+      setMessage("Global Percentage Updated!");
+      setGlobalPercent(json.data); // refresh state
+    }
+  };
+
+  if (!data)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+
+  // 🔍 Filter rows by search term
+  const filteredItems =
+    data?.items?.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
+
   return (
     <div>
-      <Row className="" justify={"between"}>
+      <Row className="" justify={"between"} align={"center"}>
         <Col md={4}>
-          <Title title="Products" />
+          <Title title="Products Percentage" />
         </Col>
-        <Col md={6} className={"flex justify-end"}>
-          <FilterSearch />
+        <Col md={6} className="flex justify-end">
+          <input
+            type="text"
+            placeholder="Search by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="form-control bg-slate-200"
+            style={{ width: "250px" }}
+          />
         </Col>
       </Row>
-      <FilterProducts />
-      {isLoading ? <Loading /> : ""}
 
-      <Row justify={"start"}>
-        {data?.data.data.map((e) => (
-          <Col lg={24} md={3} xs={6} key={e.id} className="">
-            <CardPro
-              showDelete={e.pkey === "FREE_FIRE"}
-              deleteClick={() => deleteItem(e)}
-              show={`/Products/Product-${e.number}/view/${e.id}`}
-              edit={`/Products/Product-${e.number}/${e.id}`}
-              // showHideOnMobile = {e}
-            >
-              <img
-                src={fileUrl + e.images[0]?.image}
-                alt=""
-                className="w-full h-[107px]"
-              />
-              <h1 className="text-center text-Pink font-bold text-xl">
-                {e.name.en}
-              </h1>
-              <div className="text-center align-middle flex justify-center">
-              <ApiLogo data={e?.automated} className="w-6" />
-              </div>
-             
-              
-              <h1 className="text-center text-Pink font-bold text-xl">
-                {e.number === 1
-                  ? "product one"
-                  : e.number === 2
-                  ? "product two"
-                  : e.number === 3
-                  ? "product three"
-                  : e.number === 4
-                  ? "product four"
-                  : e.number === 5
-                  ? "product five"
-                  : e.number === 5
-                  ? "Api Products"
-                  : ""}
-              </h1>
-            </CardPro>
-          </Col>
-        ))}
-      </Row>
+      <div className="mb-4 flex items-center gap-4">
+        <p>Global Percentage</p>
+        <input
+          type="number"
+          value={globalPercent ?? ""}
+          onChange={(e) => setGlobalPercent(e.target.value)}
+          className="form-control bg-slate-300"
+          style={{
+            width: "200px",
+            display: "inline-block",
+            marginRight: "10px",
+          }}
+        />
+        <button onClick={saveGlobalPercentage} disabled={saving}>
+          {saving ? "Saving..." : "Save Global"}
+        </button>
+      </div>
 
-      <Add>
-        <div className="flex flex-col">
-          <ButtonRed
-            className="py-2 m-1 px-4"
-            name="Product one"
-            link="/Products/Product-1/add"
-          />
-          <ButtonRed
-            className="py-2 m-1 px-4"
-            name="Product two"
-            link="/Products/Product-2/add"
-          />
-          <ButtonRed
-            className="py-2 m-1 px-4"
-            name="Product three"
-            link="/Products/Product-3/add"
-          />
-          <ButtonRed
-            className="py-2 m-1 px-4"
-            name="Product four"
-            link="/Products/Product-4/add"
-          />
-          <ButtonRed
-            className="py-2 m-1 px-4"
-            name="Product five"
-            link="/Products/Product-5/add"
-          />
-          <ButtonRed
-            className="py-2 m-1 px-4"
-            name="API Products"
-            link="/Products/Product-6/add"
-          />
-            <ButtonRed
-            className="py-2 m-1 px-4"
-            name="Group Products"
-            link="/Products/Product-7/add"
-          />
-        </div>
-      </Add>
+      <table border="1" cellPadding="8" style={{ width: "100%" }}>
+        <thead>
+          <tr className="text-left">
+            <th style={{ width: "40%" }}>Name</th>
+            <th style={{ width: "30%" }}>Percentage</th>
+            <th style={{ width: "30%" }}>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredItems.map((item) => (
+            <tr key={`${item.type}-${item.id}`}>
+              <td>{item.name}</td>
+              <td>
+                <input
+                  id={`item-${item.type}-${item.id}`}
+                  defaultValue={item.percentage ?? ""}
+                  className="form-control bg-slate-300"
+                />
+              </td>
+              <td>
+                <button onClick={() => savePercentage(item)}>Save</button>
+              </td>
+            </tr>
+          ))}
+          {filteredItems.length === 0 && (
+            <tr>
+              <td colSpan="3" className="text-center text-gray-500">
+                No matching products found
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };

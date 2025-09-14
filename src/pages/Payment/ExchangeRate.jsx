@@ -12,38 +12,9 @@ const ExchangeRate = () => {
 
   const { handleSubmit, setFormData, formData, loading, error } = usePOST();
   const { data } = useFETCH(`admin/exchange-rate/info`);
-  const { data: player_number } = useFETCH(`admin/player_number/info`);
 
-  useEffect(() => {
-    console.log("player_number?.data", player_number?.data);
-    if (player_number && player_number?.data && player_number?.data?.data?.player_number != "undefined") {
-      try {
-        console.log(player_number.data.data, 'player');
-        setNewPlayersNumbers(JSON.parse(player_number.data.data.player_number));
-      } catch (error) {
-        console.error("Invalid JSON format:", error);
-      }
-    }
-  }, [player_number]);
 
-  const updatePlayerNumber = async () => {
-    if (!newPlayerNumber) {
-      return;
-    }
-    const fetchedData = await fetchData(
-      `admin/player_number/info`,
-      {
-        player_number: newPlayerNumber,
-      },
-      "POST"
-    );
-    console.log(fetchedData);
-    if (fetchedData) {
-      window.location.reload();
-    }
-  };
 
-  console.log({ player_number });
   const handleSubmitMain = (e) => {
     e.preventDefault();
     handleSubmit("admin/exchange-rate/info", "", true);
@@ -61,30 +32,11 @@ const ExchangeRate = () => {
       <Title title="Exchange Rate" />
       <div className="border-2 border-Purple rounded-2xl">
         <Row className="p-4 justify-center">
-          <Input
-            name="exchange_rate"
-            type="number"
-            onChange={(e) => {
-              setValue(e.target.value);
-              setFormData({
-                exchange_rate: 1 / e.target.value,
-              });
-            }}
-            placeholder={"Exchange rate"}
-            value={value}
-          />
+       
           <div className="text-center my-2">
             Each 1$ is equal to ( {value}) pound
           </div>
-          <Col md={4}>
-            <div onClick={() => setSure(true)}>
-              <div
-                className={`bg-Pink rounded-xl hover:bg-opacity-70  text-center font-semibold text-white cursor-pointer py-2`}
-              >
-                Save
-              </div>
-            </div>
-          </Col>
+      
         </Row>
         <div className="text-red-500 font-semibold">{error}</div>
       </div>
@@ -114,60 +66,7 @@ const ExchangeRate = () => {
           </div>
         </>
       )}
-      {loading ? <Loading /> : ""}
-
-      <Title title="Player numbers" />
-      <div className="border-2 border-Purple rounded-2xl">
-        {newPlayerNumbers &&
-        <div
-          style={{
-            padding:10,
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "10px",
-            borderBottom: "1px solid ",
-          }}
-        >
-          {newPlayerNumbers.map((number, index) => (
-            <div
-              key={index}
-              style={{
-                padding: "2px",
-               
-                textAlign: "center",
-              }}
-            >
-              {number}
-            </div>
-          ))}
-        
-        </div>
-        }
-        <Row className="p-4 justify-center text-center">
-          <Input
-            name="Player_number"
-            type="text"
-            onChange={(e) => {
-              setNewPlayerNumber(e.target.value);
-            }}
-            placeholder={"Enter player number..."}
-            value={newPlayerNumber}
-          />
-
-          <Col md={12}>
-            <div
-              onClick={() => updatePlayerNumber(true)}
-              className="w-auto text-center justify-center d-flex m-auto"
-            >
-              <div
-                className={`bg-Pink d-flex m-auto w-28 rounded-xl hover:bg-opacity-70  text-center font-semibold text-white cursor-pointer py-2`}
-              >
-                Save
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </div>
+     
     </div>
   );
 };

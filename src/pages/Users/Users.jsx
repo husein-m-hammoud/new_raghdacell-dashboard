@@ -58,11 +58,6 @@ const Users = () => {
       sortable: true,
     },
     {
-      name: "Type",
-      selector: (row) => row.type,
-      sortable: true,
-    },
-    {
       name: "Balance (USD)",
       selector: (row) => row.balance,
       sortable: true,
@@ -114,34 +109,8 @@ const Users = () => {
         </Col>
       </Row>
       <Row>
-        <Col sm={6} lg={2}>
-          <Buttons
-            onClick={() => handleParamsDeleteAll()}
-            className={!search ? "bg-Pink text-white" : ""}
-            name="All"
-          />
-        </Col>
-        <Col sm={6} lg={2}>
-          <Buttons
-            onClick={() => handleParamsClick("sort_by", "COMPANY")}
-            className={`${
-              searchParams.get("sort_by") === "COMPANY"
-                ? "bg-Pink text-white"
-                : ""
-            } `}
-            name="Company"
-          />
-        </Col>
-        <Col sm={6} lg={2}>
-          <Buttons
-            onClick={() => handleParamsClick("sort_by", "USER")}
-            className={`${
-              searchParams.get("sort_by") === "USER" ? "bg-Pink text-white" : ""
-            } `}
-            name="User"
-          />
-        </Col>
-        <Col className="self-center" sm={6} lg={6}>
+
+        <Col className="self-center" sm={12} lg={12}>
           {"grid" === viewType ? (
             <FaTh
               className="text-Pink float-right cursor-pointer"
@@ -185,10 +154,7 @@ const Users = () => {
                     <div className="font-semibold text-Pink">Phone :</div>
                     <div>{e.phone_number}</div>
                   </div>
-                  <div className="flex justify-start gap-2 mb-2">
-                    <div className="font-semibold text-Pink">User Type :</div>
-                    <div>{e.type}</div>
-                  </div>
+               
                   <Row className=" pt-3">
                     <Col col={6}>
                       <ButtonRed

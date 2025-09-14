@@ -1,14 +1,15 @@
 ul li a.active {
-  color: white !important;
-  background-color: #A2081F;
+    color: white !important;
+    background-color: var(--primary);
 }
 
 .sidebar::-webkit-scrollbar {
-  width: 0px;
+    width: 0px;
 }
+
 .sideBar {
-  background-image: url("../../images/Group\ 244.png");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+    /* background-image: url("../../images/Group\ 244.png"); */
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }

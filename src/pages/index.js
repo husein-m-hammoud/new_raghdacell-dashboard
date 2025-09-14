@@ -28,28 +28,6 @@ export { default as ShippingPayments2 } from "./Requests/ShippingPayments2";
 export { default as Products } from "./Products/Products";
 export { default as ProductList } from "./Products/ProductList";
 
-export { default as AddProductFive } from "./Products/AddProductFive";
-export { default as AddProductFour } from "./Products/AddProductFour";
-export { default as AddProductThree } from "./Products/AddProductThree";
-export { default as AddProductTwo } from "./Products/AddProductTwo";
-export { default as AddProductOne } from "./Products/AddProductOne";
-export { default as AddGroupProduct } from "./Products/AddGroupProduct";
-
-export { default as AddApiProducts } from "./Products/AddApiProducts";
-export { default as ViewApiProducts } from "./Products/ViewApiProducts";
-export { default as EditApiProducts } from "./Products/EditApiProducts";
-export { default as EditApiPackage } from "./Products/EditApiPackage";
-
-export { default as ViewProductFive } from "./Products/ViewProductFive";
-export { default as ViewProductFour } from "./Products/ViewProductFour";
-export { default as ViewProductThree } from "./Products/ViewProductThree";
-export { default as ViewProductTwo } from "./Products/ViewProductTwo";
-export { default as ViewProductOne } from "./Products/ViewProductOne";
-export { default as ViewGroupProduct } from "./Products/ViewGroupProduct";
-
-export { default as AddPackageOne } from "./Products/AddPackageOne";
-export { default as Merge } from "./Products/Merge";
-
 export { default as Payment } from "./Payment/Payment";
 export { default as ExchangeRate } from "./Payment/ExchangeRate";
 export { default as WishExcel } from "./WishExcel/WishExcel";

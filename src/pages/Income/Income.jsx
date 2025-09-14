@@ -6,7 +6,7 @@ import Loading from "../../Tools/Loading";
 import { useLocation } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { CurrencyFilter } from "../Users/WalletUser";
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
 
 const Income = () => {
   const { handleParamsClick, searchParams, handleParamsDelete } = useFilter();
@@ -20,7 +20,7 @@ const Income = () => {
   //   .toString()
   //   .padStart(2, "0")} 00:00:00`;
   const now = DateTime.now();
-  const dey = now.toFormat('yyyy-MM-dd')+' 00:00:00';
+  const dey = now.toFormat("yyyy-MM-dd") + " 00:00:00";
 
   const week = `${new Date().getFullYear()}-${(new Date().getDate() < 8
     ? new Date().getMonth()
@@ -150,8 +150,8 @@ const Income = () => {
         </Col>
       </Row>
       <CurrencyFilter all={true} />
-      <div className="w-1/2 h-[360px] max-sm:w-full mx-auto flex flex-col  bgimg border-2 border-Purple rounded-2xl p-10 ">
-        <h1 className="text-2xl font-semibold mb-10">Total Income</h1>
+      <div className="w-1/2 h-[420px] max-sm:w-full mx-auto flex flex-col  bgimg border-2 border-Purple rounded-2xl p-10 ">
+        <h1 className="text-2xl font-semibold mt-3 ">Total Income</h1>
         <div className="border border-Purple h-full rounded-2xl bg-white flex items-center justify-center">
           <h1 className="text-4xl">
             <Currency
@@ -160,11 +160,21 @@ const Income = () => {
             />
           </h1>
         </div>
-        <h1 className="text-2xl font-semibold mb-10">Total Portfolios </h1>
+        <h1 className="text-2xl font-semibold mt-3">Total Portfolios </h1>
         <div className="border border-Purple h-full rounded-2xl bg-white flex items-center justify-center">
           <h1 className="text-4xl">
             <Currency
               number={dataAll?.total_wallets_balances}
+              currency={searchParams.get("currency") === "LBP" ? "LBP" : "$"}
+            />
+          </h1>
+        </div>
+
+        <h1 className="text-2xl font-semibold mt-3">Total NET </h1>
+        <div className="border border-Purple h-full rounded-2xl bg-white flex items-center justify-center">
+          <h1 className="text-4xl">
+            <Currency
+              number={dataAll?.net}
               currency={searchParams.get("currency") === "LBP" ? "LBP" : "$"}
             />
           </h1>

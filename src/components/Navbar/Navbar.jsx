@@ -40,7 +40,7 @@ const Navbar = () => {
         </>
       )}
 
-      <div className="container mx-auto sticky top-0 z-20 bg-white flex items-center justify-between flex-wrap mb-1  border-b-2 border-Brown">
+      <div className="w-100 sticky top-0 z-20 bg-white flex items-center justify-between flex-wrap mb-1  border-b-2 border-Brown py-2">
         <div>
           <BiMenu
             size={35}
@@ -49,7 +49,9 @@ const Navbar = () => {
           />
         </div>
         <div className="">
-          <img src={Logo} alt="" className="w" />
+          {/* <img src={Logo} alt="" className="w" /> */}
+          <img className="site-logo header-logo"  alt="Logo" width={85}  />
+
         </div>
         <div className="flex gap-1 mx-3">
           <ButtonRed

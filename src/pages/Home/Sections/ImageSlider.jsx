@@ -1,6 +1,6 @@
 import { Add, CardBox, Title } from "../../../components";
 import { Col, Row } from "../../../Grid-system";
-import { fileUrl, useFETCH } from "../../../APIs/useMyAPI";
+import { localFileUrl, useFETCH } from "../../../APIs/useMyAPI";
 import Loading from "../../../Tools/Loading";
 import { Link } from "react-router-dom";
 
@@ -15,7 +15,7 @@ const ImageSlider = () => {
           <Col lg={3} md={4} xs={6} key={e.id}>
             <CardBox deleteClick={() => deleteItem(e)}>
               <img
-                src={fileUrl + e.image}
+                src={localFileUrl + e.image}
                 alt=""
                 className="w-full h-[250px] object-contain"
               />

@@ -1,6 +1,6 @@
 import { ButtonRed, CardBox, CardImg, Title } from "../../components";
 import { Col, Row } from "../../Grid-system";
-import { fileUrl, useFETCH } from "../../APIs/useMyAPI";
+import { localFileUrl, useFETCH } from "../../APIs/useMyAPI";
 import Loading from "../../Tools/Loading";
 
 const AboutUs = () => {
@@ -20,11 +20,11 @@ const AboutUs = () => {
         </Col>
       </Row>
       <Row>
-        {data?.data.data.about_us_images.map((e) => (
+        {data?.data.data.about_us_images && data?.data.data.about_us_images.map((e) => (
           <Col lg={3} md={4} xs={6} key={e.id}>
             <CardBox deleteClick={() => deleteItem(e)}>
               <img
-                src={fileUrl + e.image}
+                src={localFileUrl + e.image}
                 alt=""
                 className="w-[250px] h-[250px] object-contain"
               />

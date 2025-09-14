@@ -36,7 +36,7 @@ function SideBar() {
       <div className="px-3">
         <ul className="text-black text-center font-semibold space-y-4">
           <li className="">
-            <img src={logo} alt="" className="w-[200px] mx-auto " />
+            <img src={logo} alt="" className="w-[200px] mx-auto site-logo" />
           </li>
           <li className=" ">
             <NavLink
@@ -95,22 +95,7 @@ function SideBar() {
               Contact Us
             </NavLink>
           </li>
-          <li className=" ">
-            <NavLink
-              to={"/product-types"}
-              className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
-            >
-             Product Types
-            </NavLink>
-          </li>
-          <li className=" ">
-            <NavLink
-              to={"/Categories"}
-              className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
-            >
-              Categories
-            </NavLink>
-          </li>
+      
           <li className=" ">
             <NavLink
               to={"/Products"}
@@ -119,14 +104,7 @@ function SideBar() {
               Products
             </NavLink>
           </li>
-          <li className=" ">
-            <NavLink
-              to={"/Products/ProductList"}
-              className=" text-xl  py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
-            >
-              Product list
-            </NavLink>
-          </li>
+   
           <li className=" ">
             <NavLink
               to={"/About-Us"}
@@ -177,14 +155,7 @@ function SideBar() {
               Income
             </NavLink>
           </li>
-          <li className=" ">
-            <NavLink
-              to={"/Wish-Excel"}
-              className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
-            >
-              Wish Excel
-            </NavLink>
-          </li>
+     
           <li className="pb-10">
             <NavLink
               to={"/Change-Password"}

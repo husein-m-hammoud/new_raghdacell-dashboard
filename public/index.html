@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <link rel="icon" tyap="image/svg+xml" href="./logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,8 +9,69 @@
     <meta name="description" content="dashboard raghda cell" />
 
     <title>Dash Board</title>
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="root"></div>
-  </body>
+</body>
+
+<script>
+    (function() {
+        const stored = localStorage.getItem("website_info_data");
+        if (!stored) return;
+
+        try {
+            const parsed = JSON.parse(stored);
+            const websiteInfo = parsed.websiteInfo || parsed; // fallback
+
+            if (websiteInfo.primary_color) {
+                document.documentElement.style.setProperty(
+                    "--primary-color",
+                    websiteInfo.primary_color
+                );
+            }
+
+            if (websiteInfo.secondary_color) {
+                document.documentElement.style.setProperty(
+                    "--secondary-color",
+                    websiteInfo.secondary_color
+                );
+            }
+
+            // Body background
+            if (websiteInfo.body_bg_image) {
+                document.body.style.backgroundImage = `url('${websiteInfo.body_bg_image}')`;
+                document.body.style.backgroundSize = "cover";
+                document.body.style.backgroundRepeat = "no-repeat";
+            }
+
+            // Footer / Sidebar background
+            if (websiteInfo.footer_bg_image) {
+                const footer = document.querySelector(".sidebar, footer");
+                if (footer) {
+                    footer.style.backgroundImage = `url('${websiteInfo.footer_bg_image}')`;
+                    footer.style.backgroundSize = "cover";
+                    footer.style.backgroundRepeat = "no-repeat";
+                }
+            }
+
+            // Logo
+            if (websiteInfo.logo_url) {
+                const logos = document.getElementsByClassName("site-logo");
+                Array.from(logos).forEach((el) => {
+                    el.src = websiteInfo.logo_url;
+                    if (
+                        websiteInfo.logo_width &&
+                        el.classList.contains("header-logo")
+                    ) {
+                        el.style.width = websiteInfo.logo_width;
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Failed to parse website_info_data", e);
+        }
+    })();
+</script>
+
 </html>

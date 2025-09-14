@@ -74,18 +74,7 @@ const AddUser = () => {
               className="border py-4 rounded-xl mb-4 "
               onChange={handleChangeInput}
             />
-            <select
-              name="type"
-              value={formData?.type}
-              className="w-full text-center outline-none border py-4 rounded-xl mb-4"
-              onChange={handleChangeInput}
-            >
-              <option value="" disabled selected hidden>
-                اختر النوع
-              </option>
-              <option value="COMPANY">COMPANY</option>
-              <option value="USER">USER</option>
-            </select>
+       
             {loading ? <Loading /> : ""}
             <div className="text-red-600">{error}</div>
             <input

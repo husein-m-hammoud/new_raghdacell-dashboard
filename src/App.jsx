@@ -8,6 +8,8 @@ import { P403, P404, P500 } from "./Tools/Error";
 import { getToken } from "firebase/messaging";
 import { messaging } from "./firebase";
 import { useContextHook } from "./Context/ContextOPen";
+import { fetchParentUserData } from "./utils/fetchParentUserData";
+
 
 import { onMessage } from "firebase/messaging";
 import { fileUrl, fetchData } from "./APIs/useMyAPI";
@@ -17,6 +19,47 @@ import Swal from "sweetalert2";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 const App = () => {
+
+    (async () => {
+    const websiteInfo = await fetchParentUserData();
+    console.log({ websiteInfo });
+    if (websiteInfo) {
+      document.documentElement.style.setProperty(
+        "--primary-color",
+        websiteInfo.primary_color
+      );
+      document.documentElement.style.setProperty(
+        "--secondary-color",
+        websiteInfo.secondary_color
+      );
+
+      // Set logo image
+      const logoElements = document.getElementsByClassName("site-logo");
+      if (logoElements.length > 0) {
+        Array.from(logoElements).forEach((el) => {
+          el.src = websiteInfo.logo_url;
+          if (websiteInfo.logo_width && el.classList.contains("header-logo")) {
+            el.style.width = websiteInfo.logo_width;
+          }
+        });
+      }
+
+      // Set body background image
+    if (websiteInfo.body_bg_image) {
+        document.body.style.backgroundImage = `url('${websiteInfo.body_bg_image}')`;
+        document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundRepeat = "no-repeat";
+    }
+
+    // Set footer background image
+    const footer = document.querySelector(".sidebar");
+    if (footer && websiteInfo.footer_bg_image) {
+        footer.style.backgroundImage = `url('${websiteInfo.footer_bg_image}')`;
+        footer.style.backgroundSize = "cover";
+        footer.style.backgroundRepeat = "no-repeat";
+    }
+    }
+  })();
   const {  setAdminInfo } = useContextHook();
 
   async function requestPermission() {
@@ -143,7 +186,7 @@ const App = () => {
       <div className="relative flex">
         <MessagePop />
         <SideBar />
-        <div className="container mx-auto relative font-semibold">
+        <div className="w-full relative font-semibold">
           <Navbar />
           <Container>
             <Routes>
@@ -161,7 +204,8 @@ const App = () => {
                   path=""
                   element={
                     <h1 className="grid place-content-center h-[60vh]">
-                      <img src={Logo} alt="" className="w-[250px]" />
+                      <img className="site-logo w-[250px]"  />
+
                     </h1>
                   }
                 />
@@ -223,76 +267,6 @@ const App = () => {
                 </Route>
                 <Route path="Products">
                   <Route index element={<pages.Products />} />
-                  <Route
-                    path="Product-5/:id"
-                    element={<pages.AddProductFive />}
-                  />
-                  <Route
-                    path="Product-4/:id"
-                    element={<pages.AddProductFour />}
-                  />
-                  <Route
-                    path="Product-3/:id"
-                    element={<pages.AddProductThree />}
-                  />
-                  <Route
-                    path="Product-2/:id"
-                    element={<pages.AddProductTwo />}
-                  />
-                  <Route
-                    path="Product-6/add"
-                    element={<pages.AddApiProducts />}
-                  />
-                  <Route
-                    path="Product-6/:id"
-                    element={<pages.EditApiProducts />}
-                  />
-                  <Route
-                    path="Product-6/view/:id"
-                    element={<pages.ViewApiProducts />}
-                  />
-                  <Route
-                    path="Product-1/:id"
-                    element={<pages.AddProductOne />}
-                  />
-                   <Route
-                    path="Product-7/:id"
-                    element={<pages.AddGroupProduct />}
-                  />
-                  <Route
-                    path="Product-1/package/:id/:uid"
-                    element={<pages.AddPackageOne />}
-                  />
-                  <Route path="merge/:id/" element={<pages.Merge />} />
-                  <Route path="merge/:id/:pk" element={<pages.Merge />} />
-                  <Route
-                    path="Product-6/package/:id/:uid"
-                    element={<pages.EditApiPackage />}
-                  />
-                  <Route
-                    path="Product-5/view/:id"
-                    element={<pages.ViewProductFive />}
-                  />
-                  <Route
-                    path="Product-4/view/:id"
-                    element={<pages.ViewProductFour />}
-                  />
-                  <Route
-                    path="Product-3/view/:id"
-                    element={<pages.ViewProductThree />}
-                  />
-                  <Route
-                    path="Product-2/view/:id"
-                    element={<pages.ViewProductTwo />}
-                  />
-                  <Route
-                    path="Product-1/view/:id"
-                    element={<pages.ViewProductOne />}
-                  />
-                  <Route
-                    path="Product-7/view/:id"
-                    element={<pages.ViewGroupProduct />}
-                  />
                     <Route
                     path="ProductList"
                     element={<pages.ProductList />}

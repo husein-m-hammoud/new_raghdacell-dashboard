@@ -1,6 +1,6 @@
 import { BiShow } from "react-icons/bi";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { fileUrl, useFETCH } from "../../APIs/useMyAPI";
+import { localFileUrl, useFETCH } from "../../APIs/useMyAPI";
 import { Col, Row } from "../../Grid-system";
 import Pagination from "../../Tools/Pagination";
 import {
@@ -70,7 +70,7 @@ const ChargingUser = () => {
                       <td>
                         <div className="w-[60px] h-[60px] mx-auto ">
                           <img
-                            src={fileUrl + e.image}
+                            src={localFileUrl + e.image}
                             alt=""
                             className="w-full h-full rounded-full"
                           />

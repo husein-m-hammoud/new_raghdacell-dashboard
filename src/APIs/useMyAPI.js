@@ -3,13 +3,21 @@ import { useEffect, useRef, useState } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useContextHook } from "../Context/ContextOPen";
 // export const baseUrl = "https://dev-backend.raghdacell.com/api/";
-// export const fileUrl = "https://dev-backend.raghdacell.com/storage/";
+export const fileUrl = "https://backend.raghdacell.com/storage/";
 
 // export const baseUrl = "http://localhost:8000/api/";
-// export const fileUrl = "http://localhost:8000/storage/";
+// export const localFileUrl = "http://localhost:8000/storage/";
 
-export const baseUrl = "https://backend.raghdacell.com/api/";
-export const fileUrl = "https://backend.raghdacell.com/storage/";
+
+const hostname = window.location.hostname;
+// e.g. "alicell.net", "raghdacell.com", etc.
+
+export const baseUrl = `https://backend.${hostname}/api/`;
+export const localFileUrl = `https://backend.${hostname}/storage/`;
+
+
+// export const baseUrl = "https://backend.raghdacell.com/api/";
+// export const fileUrl = "https://backend.raghdacell.com/storage/";
 
 // export const baseUrl = process.env.REACT_APP_BASE_URL;
 // export const fileUrl = process.env.REACT_APP_FILE_URL;
@@ -155,7 +163,7 @@ export const usePOST = (initialState) => {
         }
     };
     useEffect(() => {
-        if (dat ?.length !== 0) {
+        if (dat?.length !== 0) {
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 product_additional_services: JSON.stringify(dat),
@@ -244,9 +252,9 @@ export const usePOST = (initialState) => {
                         console.log("req?.data", last);
                         return;
                     }
-                    console.log("req?.data", req ?.data ?.data ?.id);
-                    if (req ?.data ?.data ?.id) {
-                        setProductId(req ?.data ?.data ?.id);
+                    console.log("req?.data", req?.data?.data?.id);
+                    if (req?.data?.data?.id) {
+                        setProductId(req?.data?.data?.id);
                         return;
                     }
                     return;
@@ -263,7 +271,7 @@ export const usePOST = (initialState) => {
             .catch((e) => {
                 console.log(e);
                 setError(e.response.data.message);
-                setMessage(e.response ?.data.message);
+                setMessage(e.response?.data.message);
                 setLoading(false);
             });
     };
@@ -403,7 +411,7 @@ export const useFETCH = (url, urlDelete) => {
             })
             .catch((e) => {
                 setIsLoading(false);
-                setMessage(e.response ?.data.message);
+                setMessage(e.response?.data.message);
                 setIsError("خطأ في جلب البيانات");
 
                 if (e.request.status === 401) {
@@ -468,7 +476,7 @@ export const useFETCH = (url, urlDelete) => {
             })
             .catch((e) => {
                 setIsLoading(false);
-                setMessage(e.response ?.data.message);
+                setMessage(e.response?.data.message);
             });
     };
     return { data, isLoading, isErroe, deleteItem, prevUrl, reCallUrl };
