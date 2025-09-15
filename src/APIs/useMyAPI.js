@@ -9,12 +9,15 @@ export const fileUrl = "https://backend.raghdacell.com/storage/";
 // export const localFileUrl = "http://localhost:8000/storage/";
 
 
-const hostname = window.location.hostname;
-// e.g. "alicell.net", "raghdacell.com", etc.
 
-export const baseUrl = `https://backend.${hostname}/api/`;
-export const localFileUrl = `https://backend.${hostname}/storage/`;
+const hostname = window.location.hostname; // e.g. "admin.url.com"
+const parts = hostname.split(".");
 
+const rootDomain = parts.slice(-2).join("."); 
+// "url.com"
+
+export const baseUrl = `https://backend.${rootDomain}/api/`;
+export const localFileUrl = `https://backend.${rootDomain}/storage/`;
 
 // export const baseUrl = "https://backend.raghdacell.com/api/";
 // export const fileUrl = "https://backend.raghdacell.com/storage/";
