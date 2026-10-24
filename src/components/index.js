@@ -31,6 +31,7 @@ export { default as ViewPackage } from "./AddApiProducts/ViewPackage";
 export { default as CheckAs7ab } from "./AddApiProducts/CheckAs7ab";
 export { default as ApiLogo } from "./AddApiProducts/ApiLogo";
 export { default as CopyableText } from "./AddApiProducts/CopyableText";
+export { default as CopyAllCodes } from "./AddApiProducts/CopyAllCodes";
 export { default as UploadModal } from "./UploadModal/UploadModal";
 export { default as AddCategoryModal } from "./Modal/AddCategoryModal";
  export { default as AddChargingModal } from "./Modal/AddChargingModal";

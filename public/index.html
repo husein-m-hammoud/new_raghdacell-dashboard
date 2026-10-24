@@ -41,8 +41,9 @@
             // Body background
             if (websiteInfo.body_bg_image) {
                 document.body.style.backgroundImage = `url('${websiteInfo.body_bg_image}')`;
-                document.body.style.backgroundSize = "cover";
+                document.body.style.backgroundSize = "contain";
                 document.body.style.backgroundRepeat = "no-repeat";
+                document.body.style.backgroundPosition = "center";
             }
 
             // Footer / Sidebar background
@@ -50,8 +51,9 @@
                 const footer = document.querySelector(".sidebar, footer");
                 if (footer) {
                     footer.style.backgroundImage = `url('${websiteInfo.footer_bg_image}')`;
-                    footer.style.backgroundSize = "cover";
+                    footer.style.backgroundSize = "contain";
                     footer.style.backgroundRepeat = "no-repeat";
+                    footer.style.backgroundPosition = "center";
                 }
             }
 
@@ -68,6 +70,20 @@
                     }
                 });
             }
+            if (websiteInfo.icon_url) {
+                let link =
+                    document.querySelector("link[rel='icon']") ||
+                    document.createElement("link");
+
+                link.rel = "icon";
+                link.href = websiteInfo.icon_url;
+                document.head.appendChild(link);
+            }
+
+            if (websiteInfo.website_name) {
+                document.title = websiteInfo.website_name;
+            }
+
         } catch (e) {
             console.error("Failed to parse website_info_data", e);
         }

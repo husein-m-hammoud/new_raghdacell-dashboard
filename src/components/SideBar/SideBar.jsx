@@ -19,13 +19,19 @@ function SideBar() {
     if (data?.data?.data) setAdminInfo(data?.data?.data);
   }, [data]);
 
+    const handleLinkClick = () => {
+    if (window.innerWidth <= 768) {
+      changeMenu();
+    }
+  };
+
   return (
     <div
       className={`${openMenu ? "w-[360px]" : " w-[0px]"} ${
         openMenu
           ? " max-sm:translate-x-0 max-sm:w-[100%] "
           : " max-sm:-translate-x-full"
-      } sidebar h-[100vh] sideBar max-sm:h-[100%] sticky max-sm:fixed left-0 top-0 transition-all overflow-y-scroll  py-10 z-40`}
+      } sidebar h-[100vh] sideBar max-sm:h-[100%] sticky max-sm:fixed left-0 top-0 transition-all overflow-y-scroll  py-10 z-40 bg-white`}
     >
       <div
         className={`max-sm:block hidden text-end mx-4 text-xl font-semibold  cursor-pointer`}
@@ -41,6 +47,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Orders"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Orders
@@ -49,6 +56,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Requests"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Charging
@@ -57,6 +65,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Message"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block relative rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               {adminInfo && adminInfo.unreadCount && <span className="message_notification">{adminInfo.unreadCount}</span>}
@@ -66,6 +75,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Notifications"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Notifications
@@ -74,6 +84,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Home"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Home
@@ -82,6 +93,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Users"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Users
@@ -90,6 +102,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Contact-Us"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Contact Us
@@ -99,6 +112,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Products"}
+              onClick={handleLinkClick}
               className=" text-xl  py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Products
@@ -108,6 +122,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/About-Us"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               About Us
@@ -115,15 +130,8 @@ function SideBar() {
           </li>
           <li className=" ">
             <NavLink
-              to={"/analytics"}
-              className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
-            >
-              Analytics
-            </NavLink>
-          </li>
-          <li className=" ">
-            <NavLink
               to={"/exchange-rate"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Exchange Rate
@@ -132,6 +140,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/payment"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Payment
@@ -141,6 +150,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Codes"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Codes
@@ -150,6 +160,7 @@ function SideBar() {
           <li className=" ">
             <NavLink
               to={"/Income?currency=USD"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Income
@@ -159,6 +170,7 @@ function SideBar() {
           <li className="pb-10">
             <NavLink
               to={"/Change-Password"}
+              onClick={handleLinkClick}
               className=" text-xl py-2 block   rounded-3xl  hover:text-Brown hover:bg-Pink hover:text-white "
             >
               Change Password

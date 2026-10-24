@@ -4,6 +4,7 @@ import { Col, Row } from "../../Grid-system";
 import { useParams } from "react-router-dom";
 import { useFETCH, usePOST } from "../../APIs/useMyAPI";
 import Loading from "../../Tools/Loading";
+import PinCard from "./PinCard";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 const AddUser = () => {
@@ -29,6 +30,7 @@ const AddUser = () => {
         phone_number: dataOld?.phone_number,
         email: dataOld?.email,
         type: dataOld?.type,
+        discount_percentage: dataOld?.discount_percentage,
       });
   }, [dataOld]);
   return (
@@ -67,6 +69,15 @@ const AddUser = () => {
               buttonClass="!border !border-[#94A3B8] "
               containerClass="!mb-2"
             />
+
+            <input
+              type="number"
+              name="discount_percentage"
+              value={formData?.discount_percentage ? formData?.discount_percentage : 0}
+              placeholder="Discount Percentage (Optional)"
+              className="border py-4 rounded-xl mb-4 "
+              onChange={handleChangeInput}
+            />
             <input
               type="text"
               name="password"
@@ -84,6 +95,7 @@ const AddUser = () => {
               className="border py-4 rounded-xl mb-4 text-white cursor-pointer bg-gradient-to-l to-Pink from-Purple "
             />
           </div>
+          {id !== "add" && <PinCard userId={id} />}
         </Col>
       </Row>
     </div>

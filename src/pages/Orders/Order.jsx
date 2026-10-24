@@ -1,16 +1,48 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Col, Row } from "../../Grid-system";
-import { Back, Currency, Title, ApiLogo, CopyableText } from "../../components";
+import {
+  Back,
+  Currency,
+  Title,
+  ApiLogo,
+  CopyableText,
+  CopyAllCodes,
+} from "../../components";
 import { fileUrl, useFETCH, fetchData } from "../../APIs/useMyAPI";
 import { json, useParams } from "react-router-dom";
 import Loading from "../../Tools/Loading";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegCopy } from "react-icons/fa";
 
+// Automated (number 6) packages define their own requirement fields, so the
+// order carries them as a flat {name: value} map (`order_fields`) rather than
+// fixed columns. Keys are the provider's raw field names, so tidy them up for
+// display only -- Arabic names are left untouched.
+const humanizeFieldName = (name = "") =>
+  name
+    .replace(/[_-]+/g, " ")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b[a-z]/g, (c) => c.toUpperCase());
+
+const parseOrderFields = (raw) => {
+  if (!raw) return [];
+  try {
+    const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+    return Object.entries(parsed).filter(
+      ([, value]) => value !== null && value !== ""
+    );
+  } catch {
+    return [];
+  }
+};
+
 const Order = () => {
   const { id } = useParams();
   const { data, isLoading } = useFETCH(`admin/orders/${id}`);
   let dataAll = data?.data.data;
+  const orderFields = parseOrderFields(dataAll?.order_fields);
   const [copys, setCopy] = useState(false);
   const text = useRef();
   const text2 = useRef();
@@ -94,15 +126,29 @@ const Order = () => {
     }
   };
 
-  const renderCodes = () => {
-    console.log("getPackegesofProduct");
-    var codes = dataAll?.item_codes;
-    console.log({ codes });
-    if (codes) {
-      codes = JSON.parse(codes);
+  // item_codes is a JSON-string of [{code: "..."}]. Parsed defensively so a
+  // malformed value can't throw inside render, and so the "copy all" button
+  // gets the whole list rather than one line at a time.
+  const parseItemCodes = (raw) => {
+    if (!raw) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [parsed];
+    } catch (error) {
+      return [{ code: String(raw) }];
     }
-    console.log({ codes });
-    return codes.map((item, index) => <CopyableText text={item?.code} />);
+  };
+
+  const renderCodes = () => {
+    const codes = parseItemCodes(dataAll?.item_codes);
+    return (
+      <>
+        <CopyAllCodes codes={codes} />
+        {codes.map((item, index) => (
+          <CopyableText key={index} text={item?.code} />
+        ))}
+      </>
+    );
   };
   return (
     <section className="py-4">
@@ -302,18 +348,6 @@ const Order = () => {
                         <div>{dataAll?.time}</div>
                       </div>
                     </Col>
-                    <Col>
-                      <div className="flex gap-2 mb-2">
-                        <div className="font-semibold text-Pink"> Ordered From : </div>
-                        <div>{dataAll?.ordered_from}</div>
-                      </div>
-                    </Col>
-                    <Col>
-                      <div className="flex gap-2 mb-2">
-                        <div className="font-semibold text-Pink"> Device Info : </div>
-                        <div>{dataAll?.device_info ? printOrderDetails(dataAll?.device_info) : ''}</div>
-                      </div>
-                    </Col>
 
                   </Row>
 
@@ -424,6 +458,18 @@ const Order = () => {
                       </div>
                     </Col>
                   )}
+                  {orderFields.map(([name, value]) => (
+                    <Col key={name}>
+                      <div className="flex gap-2 mb-2">
+                        <div className="font-semibold text-Pink">
+                          {humanizeFieldName(name)} :
+                        </div>
+                        <div className="font-semibold break-all">
+                          {String(value)}
+                        </div>
+                      </div>
+                    </Col>
+                  ))}
                   <Col>
                     <div className="flex gap-2 mb-2">
                       <div className="font-semibold text-Pink">Products :</div>

@@ -10,7 +10,6 @@ import { messaging } from "./firebase";
 import { useContextHook } from "./Context/ContextOPen";
 import { fetchParentUserData } from "./utils/fetchParentUserData";
 
-
 import { onMessage } from "firebase/messaging";
 import { fileUrl, fetchData } from "./APIs/useMyAPI";
 
@@ -19,8 +18,7 @@ import Swal from "sweetalert2";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 const App = () => {
-
-    (async () => {
+  (async () => {
     const websiteInfo = await fetchParentUserData();
     console.log({ websiteInfo });
     if (websiteInfo) {
@@ -44,26 +42,38 @@ const App = () => {
         });
       }
 
-      // Set body background image
-    if (websiteInfo.body_bg_image) {
-        document.body.style.backgroundImage = `url('${websiteInfo.body_bg_image}')`;
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundRepeat = "no-repeat";
-    }
+      if (websiteInfo.icon_url) {
+        let link =
+          document.querySelector("link[rel='icon']") ||
+          document.createElement("link");
 
-    // Set footer background image
-    const footer = document.querySelector(".sidebar");
-    if (footer && websiteInfo.footer_bg_image) {
+        link.rel = "icon";
+        link.href = websiteInfo.icon_url;
+        document.head.appendChild(link);
+      }
+
+      // Set body background image
+      if (websiteInfo.body_bg_image) {
+        document.body.style.backgroundImage = `url('${websiteInfo.body_bg_image}')`;
+        document.body.style.backgroundSize = "contain";
+        document.body.style.backgroundRepeat = "no-repeat";
+        document.body.style.backgroundPosition = "center";
+      }
+
+      // Set footer background image
+      const footer = document.querySelector(".sidebar");
+      if (footer && websiteInfo.footer_bg_image) {
         footer.style.backgroundImage = `url('${websiteInfo.footer_bg_image}')`;
-        footer.style.backgroundSize = "cover";
+        footer.style.backgroundSize = "contain";
         footer.style.backgroundRepeat = "no-repeat";
-    }
+        footer.style.backgroundPosition = "center";
+      }
     }
   })();
-  const {  setAdminInfo } = useContextHook();
+  const { setAdminInfo } = useContextHook();
 
   async function requestPermission() {
-    if(isIOS) {
+    if (isIOS) {
       return;
     }
     const prem = await Notification.requestPermission();
@@ -76,80 +86,75 @@ const App = () => {
 
       sessionStorage.setItem("fcm_token", fcm_token);
     } else if (prem === "denied") {
-      console.log('denied');
+      console.log("denied");
     }
   }
 
   const fetchAdminInfo = async () => {
-    var url =  window.localStorage.getItem("token") ? `admin/admin-info` : "";
-    if(url) {
-    try {
-      var res = await fetchData(url, null, 'GET');
-      if (res?.data) {
-        setAdminInfo(res.data);
-      } else {
-        console.error("No data received:", res);
+    var url = window.localStorage.getItem("token") ? `admin/admin-info` : "";
+    if (url) {
+      try {
+        var res = await fetchData(url, null, "GET");
+        if (res?.data) {
+          setAdminInfo(res.data);
+        } else {
+          console.error("No data received:", res);
+        }
+      } catch (error) {
+        console.error("Error fetching admin info:", error);
       }
-    } catch (error) {
-      console.error("Error fetching admin info:", error);
     }
-  }
   };
-  
-  
+
   useEffect(() => {
-    if(!isIOS) {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/firebase-messaging-sw.js")
-        .then((registration) => {
-          console.log("🔥 Service Worker Registered:", registration);
-        })
-        .catch((error) => {
-          console.error("❌ Service Worker Registration Failed:", error);
-        });
+    if (!isIOS) {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/firebase-messaging-sw.js")
+          .then((registration) => {
+            console.log("🔥 Service Worker Registered:", registration);
+          })
+          .catch((error) => {
+            console.error("❌ Service Worker Registration Failed:", error);
+          });
+      }
     }
-  }
     requestPermission();
   }, []);
-  if(!isIOS) {
+  if (!isIOS) {
+    onMessage(messaging, async (payload) => {
+      console.log("📩 TEST Foreground Notification Received:", payload);
 
-  onMessage(messaging,  async (payload) => {
-    console.log("📩 TEST Foreground Notification Received:", payload);
-  
-    if (!payload.notification) {
-      console.log("🚨 Payload missing notification object", payload);
-      return;
-    }
-    fetchAdminInfo();
-   
+      if (!payload.notification) {
+        console.log("🚨 Payload missing notification object", payload);
+        return;
+      }
+      fetchAdminInfo();
 
-    new Notification(payload.notification.title, {
-      body: payload.notification.body,
-      icon: "/logo.png",
+      new Notification(payload.notification.title, {
+        body: payload.notification.body,
+        icon: "/logo.png",
+      });
+
+      console.log("✅ Foreground Notification Displayed");
     });
-  
-    console.log("✅ Foreground Notification Displayed");
-  });
-}
+  }
 
   useEffect(() => {
-    if(!isIOS) {
-    console.log("🔄 Checking Notification Permissions...");
-  
-    Notification.requestPermission()
-      .then((permission) => {
-        if (permission === "granted") {
-          console.log("✅ Notification Permission Granted");
-        } else {
-          console.warn("🚫 Notification Permission Denied");
-        }
-      })
-      .catch((err) => console.error("🚨 Error requesting permission:", err));
+    if (!isIOS) {
+      console.log("🔄 Checking Notification Permissions...");
+
+      Notification.requestPermission()
+        .then((permission) => {
+          if (permission === "granted") {
+            console.log("✅ Notification Permission Granted");
+          } else {
+            console.warn("🚫 Notification Permission Denied");
+          }
+        })
+        .catch((err) => console.error("🚨 Error requesting permission:", err));
     }
   }, []);
-  
-  
-  
 
   useEffect(() => {
     const handleOnline = () => {
@@ -204,8 +209,7 @@ const App = () => {
                   path=""
                   element={
                     <h1 className="grid place-content-center h-[60vh]">
-                      <img className="site-logo w-[250px]"  />
-
+                      <img className="site-logo w-[250px]" />
                     </h1>
                   }
                 />
@@ -267,10 +271,7 @@ const App = () => {
                 </Route>
                 <Route path="Products">
                   <Route index element={<pages.Products />} />
-                    <Route
-                    path="ProductList"
-                    element={<pages.ProductList />}
-                  />
+                  <Route path="ProductList" element={<pages.ProductList />} />
                 </Route>
                 <Route
                   path="Change-Password"
@@ -279,7 +280,6 @@ const App = () => {
                 <Route path="Categories" element={<pages.Categories />} />
                 <Route path="product-types" element={<pages.ProductTypes />} />
 
-                
                 <Route path="Wish-Excel" element={<pages.WishExcel />} />
                 <Route path="analytics" element={<pages.Analytics />} />
               </Route>

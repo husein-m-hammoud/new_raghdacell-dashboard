@@ -4,7 +4,7 @@ import { BiShow } from "react-icons/bi";
 import { Link, useLocation } from "react-router-dom";
 import {
   clickZoomInImage,
-  fileUrl,
+  localFileUrl,
   useFETCH,
   useFilter,
 } from "../../APIs/useMyAPI";
@@ -25,7 +25,6 @@ import {
 } from "../../components";
 import code from "../../images/istockphoto-1136155337-612x612.jpg";
 import { CurrencyFilter } from "../Users/WalletUser";
-
 
 const Requests = () => {
   const [showModal, setShowModal] = useState(false);
@@ -83,7 +82,11 @@ const Requests = () => {
                         <div className="w-[60px] h-[60px] mx-auto ">
                           <img
                             src={
-                              e.name === "PROMO_CODE" ? code : fileUrl + e.image
+                              e.name === "PROMO_CODE"
+                                ? code
+                                : e.image?.startsWith("http")
+                                ? e.image
+                                : localFileUrl + e.image
                             }
                             alt=""
                             onClick={clickZoomInImage}

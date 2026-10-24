@@ -18,18 +18,34 @@ const Users = () => {
     "admin/users"
   );
   const { data: AllUsers } = useFETCH(`admin/users/all-users`);
+
+  // "Lock All" / "Unlock All" flip a site-wide flag (site_info.lock_all_users)
+  // instead of mass-writing users.lock, so lifting the global lock no longer
+  // clears the locks an admin set on individual users. This endpoint reports
+  // both: the switch itself and how many users carry their own lock.
+  const lockStatusUrl = `admin/users/lock-status`;
+  const { data: lockStatus, reCallUrl: reCallLockStatus } =
+    useFETCH(lockStatusUrl);
+  const allUsersLocked = !!lockStatus?.data?.lock_all_users;
+  const lockedUsersCount = lockStatus?.data?.locked_users_count ?? 0;
+
+  const refreshUsers = () => {
+    reCallUrl(`admin/users${search}`);
+    reCallLockStatus(lockStatusUrl);
+  };
+
   const updateLockStatus = async (user_id) => {
     const fetchedData = await fetchData(`admin/users/${user_id}/toggle-lock`);
     console.log({ fetchedData });
     if (fetchedData?.message) {
-      reCallUrl(`admin/users${search}`);
+      refreshUsers();
     }
   };
   const lockAllUsers = async () => {
     const fetchedData = await fetchData(`admin/users/lock-all`);
     console.log({ fetchedData });
     if (fetchedData?.message) {
-      reCallUrl(`admin/users${search}`);
+      refreshUsers();
     }
   };
 
@@ -37,7 +53,25 @@ const Users = () => {
     const fetchedData = await fetchData(`admin/users/unlock-all`);
     console.log({ fetchedData });
     if (fetchedData?.message) {
-      reCallUrl(`admin/users${search}`);
+      refreshUsers();
+    }
+  };
+
+  // The old "Unlock All" behaviour, kept as its own explicit action: wipes
+  // every per-user lock at once (what cleans up rows left locked by a
+  // pre-flag "Lock All").
+  const clearIndividualLocks = async () => {
+    if (
+      !window.confirm(
+        `Unlock ${lockedUsersCount} individually locked user(s)? This cannot be undone.`
+      )
+    ) {
+      return;
+    }
+    const fetchedData = await fetchData(`admin/users/clear-individual-locks`);
+    console.log({ fetchedData });
+    if (fetchedData?.message) {
+      refreshUsers();
     }
   };
 
@@ -78,19 +112,30 @@ const Users = () => {
     <div>
       <Row className="" justify={"between"}>
         <Col md={4}>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center gap-2 flex-wrap">
             <Title title="Users" />
             <Buttons
-              onClick={() => lockAllUsers()}
-              className="bg-Pink text-white px-4"
-              name="Lock All"
+              onClick={() =>
+                allUsersLocked ? unlockAllUsers() : lockAllUsers()
+              }
+              className={`${
+                allUsersLocked ? "bg-red-600 text-white" : "bg-Pink text-white"
+              } px-4`}
+              name={allUsersLocked ? "Unlock All" : "Lock All"}
             />
-            <Buttons
-              onClick={() => unlockAllUsers()}
-              className="bg-Pink text-white px-4"
-              name="Unlock All"
-            />
+            {lockedUsersCount > 0 && (
+              <Buttons
+                onClick={() => clearIndividualLocks()}
+                className="bg-Pink text-white px-4"
+                name={`Clear user locks (${lockedUsersCount})`}
+              />
+            )}
           </div>
+          {allUsersLocked && (
+            <p className="text-red-600 text-sm font-semibold mt-1">
+              Ordering is locked for all users
+            </p>
+          )}
         </Col>
         <Col md={6} className={"flex justify-end"}>
           <div className="flex flex-wrap gap-3">

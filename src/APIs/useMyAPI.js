@@ -16,11 +16,11 @@ const parts = hostname.split(".");
 const rootDomain = parts.slice(-2).join("."); 
 // "url.com"
 
-export const baseUrl = `https://backend.${rootDomain}/api/`;
-export const localFileUrl = `https://backend.${rootDomain}/storage/`;
+export const baseUrl = hostname === 'localhost' ? `http://localhost:8000/api/` : `https://backend.${rootDomain}/api/`;
+export const localFileUrl = hostname === 'localhost' ? `http://localhost:8000/storage/` : `https://backend.${rootDomain}/storage/`;
 
-// export const baseUrl = "https://backend.raghdacell.com/api/";
-// export const fileUrl = "https://backend.raghdacell.com/storage/";
+// export const baseUrl = "https://backend.raghdacell.net/api/";
+// export const localFileUrl = "https://backend.raghdacell.net/storage/";
 
 // export const baseUrl = process.env.REACT_APP_BASE_URL;
 // export const fileUrl = process.env.REACT_APP_FILE_URL;

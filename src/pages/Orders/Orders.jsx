@@ -70,7 +70,6 @@ const Orders = () => {
         </Col>
       </Row>
       <FilterOrderStataus />
-      <FilterProducts />
       <CurrencyFilter />
       <Pagination
         loading={isLoading}
@@ -151,10 +150,12 @@ const Orders = () => {
                         <div className="flex h-full justify-center gap-3 items-center">
                           {e.status === "FAILED" ? (
                             <div>
-                              <AcceptBtn
-                                url={`admin/orders/${e.id}?status=COMPLETED`}
-                                acceptNote={true}
-                              />
+                              {/* {!e.order_reference && (
+                                <AcceptBtn
+                                  url={`admin/orders/${e.id}?status=COMPLETED`}
+                                  acceptNote={true}
+                                />
+                              )} */}
                               <ReorderBtn
                                 url={`admin/automated/retry/order/${e.id}`}
                                 acceptNote={true}
@@ -165,29 +166,12 @@ const Orders = () => {
                             </div>
                           ) : e.status === "WAITING" ? (
                             <div>
-                              <CancelBtn
+                              {/* <CancelBtn
                                 url={`admin/orders/${e.id}?status=CANCELED`}
-                              />
-                              <AcceptBtn
-                                url={`admin/orders/${e.id}?status=COMPLETED`}
-                                acceptNote={true}
-                              />
-                            </div>
-                          ) : e.status === "COMPLETED" ? (
-                            <div>
-                              <CancelBtn
-                                url={`admin/orders/${e.id}?status=CANCELED`}
-                              />
+                              /> */}
                             </div>
                           ) : e.status === "CANCELED" ? (
                             <>
-                              <div>
-                                <AcceptBtn
-                                  url={`admin/orders/${e.id}?status=COMPLETED`}
-                                  acceptNote={true}
-                                />
-                              </div>
-
                               <DeleteTable deleteClick={() => deleteItem(e)} />
                             </>
                           ) : (

@@ -81,14 +81,6 @@ const Message = () => {
                   </span>
                   <span>{e.created_at}</span>
                 </div>
-                {e.read == 0 &&
-                  <div className="mt-2 text-right w-100">
-                  <span onClick={() => {
-                    setShowModal(true);
-                    setMessage(e);
-                  }} className="font-bold cursor-pointer">Create Deposit</span>
-                </div>
-                }
                 
               </CardBox>
             </Col>

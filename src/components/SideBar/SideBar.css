@@ -1,6 +1,6 @@
 ul li a.active {
     color: white !important;
-    background-color: var(--primary);
+    background-color: var(--primary-color);
 }
 
 .sidebar::-webkit-scrollbar {
