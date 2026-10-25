@@ -180,17 +180,39 @@ const Products = () => {
         </thead>
         <tbody>
           {filteredItems.map((item) => (
-            <tr key={`${item.type}-${item.id}`}>
-              <td>{item.name}</td>
+            <tr
+              key={`${item.type}-${item.id}`}
+              className={item.type === "category" ? "bg-slate-100" : ""}
+            >
               <td>
-                <input
-                  id={`item-${item.type}-${item.id}`}
-                  defaultValue={item.percentage ?? ""}
-                  className="form-control bg-slate-300"
-                />
+                {item.in_category ? (
+                  <span className="pl-6 text-gray-700">{item.name}</span>
+                ) : item.type === "category" ? (
+                  <span className="font-bold">{item.name}</span>
+                ) : (
+                  item.name
+                )}
               </td>
               <td>
-                <button onClick={() => savePercentage(item)}>Save</button>
+                {item.in_category ? (
+                  // Set on the category, not here: getPercentage() always reads
+                  // the category when a product has one, so a per-product value
+                  // would never be used.
+                  <span className="text-xs text-gray-500">
+                    {item.percentage ?? "global"} (from category)
+                  </span>
+                ) : (
+                  <input
+                    id={`item-${item.type}-${item.id}`}
+                    defaultValue={item.percentage ?? ""}
+                    className="form-control bg-slate-300"
+                  />
+                )}
+              </td>
+              <td>
+                {!item.in_category && (
+                  <button onClick={() => savePercentage(item)}>Save</button>
+                )}
               </td>
               <td>
                 {item.type === "product" ? (
