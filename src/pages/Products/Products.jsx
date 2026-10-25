@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useFETCH, fetchData, baseUrl, fileUrl, localFileUrl } from "../../APIs/useMyAPI";
+import { useFETCH, fetchData, baseUrl, localFileUrl } from "../../APIs/useMyAPI";
 import { Col, Row } from "../../Grid-system";
 import Loading from "../../Tools/Loading";
 import { useContextHook } from "../../Context/ContextOPen";
@@ -199,10 +199,14 @@ const Products = () => {
                       src={
                         item.custom_image
                           ? localFileUrl + item.custom_image
-                          : fileUrl + (item.image || "")
+                          : item.image_url || ""
                       }
                       alt=""
+                      title={item.custom_image ? "Your image" : "Default image"}
                       className="w-12 h-12 object-contain bg-slate-100 rounded"
+                      onError={(e) => {
+                        e.currentTarget.style.visibility = "hidden";
+                      }}
                     />
                     <div className="flex flex-col gap-1">
                       <input
