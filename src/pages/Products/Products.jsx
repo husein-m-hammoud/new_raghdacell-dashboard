@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useFETCH, fetchData } from "../../APIs/useMyAPI";
+import { useFETCH, fetchData, baseUrl, localFileUrl } from "../../APIs/useMyAPI";
 import { Col, Row } from "../../Grid-system";
 import Loading from "../../Tools/Loading";
 import { useContextHook } from "../../Context/ContextOPen";
@@ -33,6 +33,68 @@ const Products = () => {
       setGlobalPercent(global_percentage?.data?.data ?? "");
     }
   }, [global_percentage]);
+
+  // Our own picture for a product, replacing the one the parent ships.
+  // fetchData() always sends JSON, so the upload posts FormData directly --
+  // and deliberately sets no Content-Type, so the browser adds the multipart
+  // boundary itself.
+  const [uploading, setUploading] = useState(null);
+
+  const uploadImage = async (item, file) => {
+    if (!file) return;
+    const body = new FormData();
+    body.append("product_id", item.id);
+    body.append("image", file);
+    try {
+      setUploading(item.id);
+      const res = await fetch(`${baseUrl}admin/commissions/image`, {
+        method: "POST",
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        body,
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error("upload failed");
+      setData((prev) => ({
+        ...prev,
+        items: prev.items.map((row) =>
+          row.type === item.type && row.id === item.id
+            ? { ...row, custom_image: json.data.custom_image }
+            : row
+        ),
+      }));
+      setMessage("Image updated!");
+    } catch (e) {
+      setMessage("Could not upload that image");
+    } finally {
+      setUploading(null);
+    }
+  };
+
+  const resetImage = async (item) => {
+    try {
+      setUploading(item.id);
+      const json = await fetchData(
+        `admin/commissions/image/delete`,
+        { product_id: item.id },
+        "POST"
+      );
+      if (json.success) {
+        setData((prev) => ({
+          ...prev,
+          items: prev.items.map((row) =>
+            row.type === item.type && row.id === item.id
+              ? { ...row, custom_image: null }
+              : row
+          ),
+        }));
+        setMessage("Back to the default image");
+      }
+    } catch (e) {
+      setMessage("Could not reset that image");
+    } finally {
+      setUploading(null);
+    }
+  };
 
   const savePercentage = async (item) => {
     const value = document.getElementById(`item-${item.type}-${item.id}`).value;
@@ -110,30 +172,92 @@ const Products = () => {
       <table border="1" cellPadding="8" style={{ width: "100%" }}>
         <thead>
           <tr className="text-left">
-            <th style={{ width: "40%" }}>Name</th>
-            <th style={{ width: "30%" }}>Percentage</th>
-            <th style={{ width: "30%" }}>Action</th>
+            <th style={{ width: "28%" }}>Name</th>
+            <th style={{ width: "22%" }}>Percentage</th>
+            <th style={{ width: "15%" }}>Action</th>
+            <th style={{ width: "35%" }}>Image</th>
           </tr>
         </thead>
         <tbody>
           {filteredItems.map((item) => (
-            <tr key={`${item.type}-${item.id}`}>
-              <td>{item.name}</td>
+            <tr
+              key={`${item.type}-${item.id}`}
+              className={item.type === "category" ? "bg-slate-100" : ""}
+            >
               <td>
-                <input
-                  id={`item-${item.type}-${item.id}`}
-                  defaultValue={item.percentage ?? ""}
-                  className="form-control bg-slate-300"
-                />
+                {item.in_category ? (
+                  <span className="pl-6 text-gray-700">{item.name}</span>
+                ) : item.type === "category" ? (
+                  <span className="font-bold">{item.name}</span>
+                ) : (
+                  item.name
+                )}
               </td>
               <td>
-                <button onClick={() => savePercentage(item)}>Save</button>
+                {item.in_category ? (
+                  // Set on the category, not here: getPercentage() always reads
+                  // the category when a product has one, so a per-product value
+                  // would never be used.
+                  <span className="text-xs text-gray-500">
+                    {item.percentage ?? "global"} (from category)
+                  </span>
+                ) : (
+                  <input
+                    id={`item-${item.type}-${item.id}`}
+                    defaultValue={item.percentage ?? ""}
+                    className="form-control bg-slate-300"
+                  />
+                )}
+              </td>
+              <td>
+                {!item.in_category && (
+                  <button onClick={() => savePercentage(item)}>Save</button>
+                )}
+              </td>
+              <td>
+                {item.type === "product" ? (
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={
+                        item.custom_image
+                          ? localFileUrl + item.custom_image
+                          : item.image_url || ""
+                      }
+                      alt=""
+                      title={item.custom_image ? "Your image" : "Default image"}
+                      className="w-12 h-12 object-contain bg-slate-100 rounded"
+                      onError={(e) => {
+                        e.currentTarget.style.visibility = "hidden";
+                      }}
+                    />
+                    <div className="flex flex-col gap-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploading === item.id}
+                        onChange={(e) => uploadImage(item, e.target.files[0])}
+                        className="text-xs"
+                      />
+                      {item.custom_image && (
+                        <button
+                          type="button"
+                          className="text-xs text-red-600 underline text-left"
+                          onClick={() => resetImage(item)}
+                        >
+                          Use default image
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <span className="text-xs text-gray-400">—</span>
+                )}
               </td>
             </tr>
           ))}
           {filteredItems.length === 0 && (
             <tr>
-              <td colSpan="3" className="text-center text-gray-500">
+              <td colSpan="4" className="text-center text-gray-500">
                 No matching products found
               </td>
             </tr>
