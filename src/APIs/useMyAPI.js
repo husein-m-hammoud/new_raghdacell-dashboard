@@ -397,6 +397,15 @@ export const useFETCH = (url, urlDelete) => {
 
     const naviget = useNavigate();
     useEffect(() => {
+        // No endpoint means "do not fetch" -- callers pass "" while they are
+        // still missing what the URL needs (a token, an id). Without this the
+        // hook requested the bare baseUrl, which is not a route: the server
+        // 301s it and the browser reports the preflight redirect as a CORS
+        // failure.
+        if (!url) {
+            setIsLoading(false);
+            return;
+        }
         setPrevUrl(url);
         setIsLoading(true);
         axios
